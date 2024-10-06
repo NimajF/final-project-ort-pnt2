@@ -1,20 +1,16 @@
 import { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
-
 const endpoints = [
   "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=layer-1&order=market_cap_desc&per_page=10&price_change_percentage=1h%2C24h%2C7d",
   "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=price_change_percentage_24h_asc&per_page=10&price_change_percentage=24h",
 ];
-
 export default function SelectForApi({option}) {
   const [selectedOption, setSelectedOption] = useState(0);
-
   
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Select Option</Text>
-
       <View style={styles.pickerContainer}>
         <Picker
           selectedValue={selectedOption}
@@ -31,7 +27,6 @@ export default function SelectForApi({option}) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     alignSelf: "flex-end",

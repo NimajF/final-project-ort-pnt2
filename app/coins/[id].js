@@ -16,7 +16,6 @@ import Feather from '@expo/vector-icons/Feather';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import AddCoinModal from "../../Components/AddCoinModal";
 
-
 export default function CoinPage() {
   const [coin, setCoin] = useState([]);
   const { id } = useLocalSearchParams();
@@ -24,10 +23,16 @@ export default function CoinPage() {
   const [modalVisible, setModalVisible] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const [message, setMessage] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false); // Estado para manejar si es favorito o no
 
   const handleFavorite = () => {
-    //
-  }
+    setIsFavorite(prev => !prev); // Cambia el estado de favorito
+    setMessage(isFavorite ? "Removed from favorites!" : "Added to favorites!"); // Mensaje de confirmación
+    setToastVisible(true); // Muestra el toast
+    setTimeout(() => {
+      setToastVisible(false); // Oculta el toast después de 3 segundos
+    }, 3000);
+  };
 
   useEffect(() => {
     const url = `https://api.coingecko.com/api/v3/coins/${id}`;
@@ -48,12 +53,11 @@ export default function CoinPage() {
         console.error("error:" + err);
         setLoading(true);
       });
-      
   }, []);
+
   if (loading) {
     return <ActivityIndicator size="large" color="#52527e" />;
   }
-
   if (coin.error) {
     return (
       <View>
@@ -68,7 +72,19 @@ export default function CoinPage() {
         </Toast>
         <Image source={{ uri: coin.image.small }} style={styles.cryptoImage} />
         <Text style={styles.title}>{coin.name} <Text style={{ color: "grey", fontWeight: "100" }}>(USD)</Text></Text>
-        <Pressable  style={styles.favorite} onPress={()=> handleFavorite()} ><FontAwesome name="star-o" size={24} color="#bebebe" /></Pressable>
+        
+        {/* Botón para agregar a favoritos */}
+        <Pressable 
+          style={styles.favorite} 
+          onPress={handleFavorite} 
+        >
+          <FontAwesome 
+            name={isFavorite ? "star" : "star-o"} 
+            size={24} 
+            color={isFavorite ? "#FFD700" : "#bebebe"} // Cambia el color si es favorito
+          />
+        </Pressable>
+
         <Text style={styles.symbol}>{coin.symbol.toUpperCase()}</Text>
         <Text style={styles.coinRank}>Market Cap Rank <Text style={styles.coinRankSpan}>{coin.market_cap_rank}</Text></Text>
         <Text style={styles.price}>
@@ -137,6 +153,7 @@ export default function CoinPage() {
     );
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     width: "100%",

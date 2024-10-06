@@ -1,4 +1,4 @@
 
-export default function coinAmountConverter(userCash, coinPrice){
-    return (userCash/coinPrice).toFixed(3);
+export function coinAmountConverter(userCash, coinPrice) {
+    return (userCash / coinPrice).toFixed(3);
 }

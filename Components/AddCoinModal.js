@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import Toast from "react-native-root-toast";
-import coinAmountConverter from "../utils/coinAmountConverter";
+import { coinAmountConverter } from "../utils/coinAmountConverter"; // Cambiado a importación nombrada
 import {
   Modal,
   Pressable,
@@ -25,26 +24,27 @@ export default function AddCoinModal({
   const [userCash, setUserCash] = useState(0);
 
   const handleAddCoin = () => {
+    // Convierte userCash a número
     let total = coinAmountConverter(
-      userCash,
+      Number(userCash), // Conversión a número
       coin.market_data.current_price.usd
     );
-    infoAdded(`Successfully added ${amount}x ${coin.symbol} - ${userCash}usdt`);
+    infoAdded(`Successfully added ${amount}x ${coin.symbol} - ${userCash} USDT`);
     setModalVisible(false);
-    // alert(`Added ${total}x ${coin.symbol.toUpperCase()} - ${userCash} USDT`);
     setToastVisible(true);
     setTimeout(() => {
       setToastVisible(false);
     }, 3000);
   };
 
-  useEffect(() =>{
+  useEffect(() => {
+    // Convierte userCash a número antes de usarlo en coinAmountConverter
     let total = coinAmountConverter(
-      userCash,
+      Number(userCash), // Conversión a número
       coin.market_data.current_price.usd
     );
-    setAmount(total)
-  }, [userCash])
+    setAmount(total);
+  }, [userCash]);
 
   return (
     <Modal
@@ -76,12 +76,9 @@ export default function AddCoinModal({
             keyboardType="numeric"
             placeholder={`Enter your inversion`}
           />
-
           <Pressable
             style={[styles.button, styles.buttonAdd]}
-            onPress={() => {
-              handleAddCoin();
-            }}
+            onPress={handleAddCoin}
           >
             <Text style={styles.buttonText}>
               Add {amount} {coin.symbol.toUpperCase()}
