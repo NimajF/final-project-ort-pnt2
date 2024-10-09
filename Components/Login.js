@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { router } from "expo-router";
 import { View, Alert } from "react-native";
 import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
@@ -37,7 +37,7 @@ export default function Login() {
         placeholderTextColor="#aaa"
         value={username}
         onChangeText={(value) => handleChange("username", value)}
-        keyboardType="username"
+        keyboardType="default"
         autoCapitalize="none"
       />
       <TextInput
@@ -58,25 +58,17 @@ export default function Login() {
         secureTextEntry={true}
         autoCapitalize="none"
       />
-      <TouchableOpacity style={styles.loginButton}>
-        <Text style={styles.loginButtonText} onPress={() => console.log(user)}>
-          Login
-        </Text>
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <Text style={styles.loginButtonText}>Login</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleLogin}>
+
+      <TouchableOpacity onPress={() => router.push("/register")} style={styles.registerLink}>
         <Text style={styles.registerText}>
           Don't have an account?{" "}
-          <Text
-            style={{
-              fontFamily: "Inter_18pt-Regular",
-              color: "#6960dd",
-              fontWeight: "bold",
-            }}
-          >
-            Sign Up
-          </Text>
+          <Text style={styles.boldText}>Sign Up</Text>
         </Text>
       </TouchableOpacity>
+      
       <TouchableOpacity onPress={handleReturnHome}>
         <Text style={styles.returnHome}>Return to home </Text>
       </TouchableOpacity>
@@ -85,78 +77,60 @@ export default function Login() {
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: "100%", // Asegúrate de que la imagen cubra todo el ancho
-    height: "100%", // Asegúrate de que la imagen cubra todo el alto
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  image: {
-    // Ajusta la opacidad si la imagen se ve demasiado brillante
-    width: "100%", // Asegúrate de que la imagen ocupe todo el ancho disponible
-    height: "100%", // Asegúrate de que la imagen ocupe todo el alto disponible
-  },
   container: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    height: 600,
-    backgroundColor: "#0d1421fd", // Fondo de la tarjeta
-    padding: 35,
-    paddingTop: 30,
-    paddingBottom: 170,
-    borderRadius: 0,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 5, // Sombra para la tarjeta en Android
-    shadowColor: "#000", // Sombra para iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    // marginTop: '-5rem',
+    padding: 20,
+    backgroundColor: "#0d1421fd", // Color de fondo
   },
   title: {
-    alignSelf: "flex-start",
-    fontSize: 24,
+    fontSize: 28,
     color: "#e4e4e4",
-    marginBottom: 25,
+    marginBottom: 30,
+    fontWeight: "bold",
   },
   input: {
     width: "100%",
     height: 50,
-    backgroundColor: "#060d1a",
-    // border: "1px solid #162238",
-    borderRadius: 20,
+    backgroundColor: "#1e2533", // Color de fondo de los campos
+    borderRadius: 10,
     paddingHorizontal: 15,
-    color: "#58af5f",
+    color: "#fff",
     fontSize: 16,
-    marginBottom: 20,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: "#555", // Color del borde
   },
   loginButton: {
     width: "100%",
-    backgroundColor: "#4caf50",
-    padding: 10,
-    borderRadius: 20,
+    backgroundColor: "#4caf50", // Color del botón
+    padding: 15,
+    borderRadius: 10,
     alignItems: "center",
-    marginTop: "1rem",
-    marginBottom: 10,
+    marginTop: 10,
   },
   loginButtonText: {
-    fontSize: 16,
-    fontFamily: "Inter_18pt-Regular",
+    fontSize: 18,
     color: "#fff",
+    fontWeight: "bold",
+  },
+  registerLink: {
+    marginTop: 15,
+    alignItems: "center",
   },
   registerText: {
-    fontFamily: "Inter_18pt-Regular",
     color: "#bbbbbb",
-    marginTop: 20,
     fontSize: 14,
   },
+  boldText: {
+    fontWeight: "bold",
+    color: "#6960dd",
+  },
   returnHome: {
-    fontFamily: "Inter_18pt-Regular",
     color: "#dddddd",
     marginTop: 10,
     fontSize: 14,
+    textDecorationLine: 'underline', // Subrayado para destacar el enlace
   },
 });
