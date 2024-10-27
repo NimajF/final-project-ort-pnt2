@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
-import { coinAmountConverter } from "../utils/coinAmountConverter"; // Cambiado a importación nombrada
 import { useEffect, useState, useContext } from "react";
+import { coinAmountConverter } from "../utils/coinAmountConverter"; // Cambiado a importación nombrada
 import { UserPortfolioContext } from "../contexts/UserPortfolioContext";
-import coinAmountConverter from "../utils/coinAmountConverter";
 import {
   Modal,
   Pressable,
@@ -84,13 +82,7 @@ export default function AddCoinModal({
             {/* {date.toLocaleDateString()} */}
           </Text>
           <Text style={styles.label}>Enter your inversion (USDT)</Text>
-          <TextInput
-            style={styles.input}
-            value={userCash}
-            onChangeText={setUserCash}
-            keyboardType="numeric"
-            placeholder={`Enter your inversion`}
-          />
+
           <View style={styles.userCashDiv}>
             <Text style={styles.dollarSign}>$ </Text>
             <TextInput

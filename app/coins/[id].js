@@ -94,10 +94,6 @@ export default function CoinPage() {
           />
         </Pressable>
 
-        <Text style={styles.title}>
-          {coin.name}{" "}
-          <Text style={{ color: "grey", fontWeight: "100" }}>(USD)</Text>
-        </Text>
         <Pressable style={styles.favorite} onPress={() => handleFavorite()}>
           <FontAwesome name="star-o" size={24} color="#bebebe" />
         </Pressable>
