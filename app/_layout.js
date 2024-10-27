@@ -5,7 +5,7 @@ import { useFonts } from "expo-font";
 import Toast from "react-native-toast-message";
 import * as SplashScreen from "expo-splash-screen";
 import { View, StyleSheet } from "react-native";
-import { UserPortFolioProvider } from "../contexts/UserPortfolioContext";
+import { UserPortfolioProvider } from "../contexts/UserPortfolioContext";
 import { Navbar } from "../Components/Navbar";
 
 const Layout = ({ children }) => {
@@ -26,15 +26,20 @@ const Layout = ({ children }) => {
     return null;
   } else {
     return (
-      <UserPortFolioProvider>
+      <UserPortfolioProvider>
         <RootSiblingParent>
-          <View style={[styles.container, {paddingBottom: segments && segments[0] === "login" ? 0 : 60}]}>
+          <View
+            style={[
+              styles.container,
+              { paddingBottom: segments && segments[0] === "login" ? 0 : 60 },
+            ]}
+          >
             <Slot />
             {segments && segments[0] !== "login" ? <Navbar /> : null}
             <Toast />
           </View>
         </RootSiblingParent>
-      </UserPortFolioProvider>
+      </UserPortfolioProvider>
     );
   }
 };
@@ -43,6 +48,7 @@ const styles = StyleSheet.create({
   container: {
     fontFamily: "Inter_18pt-Regular",
     flex: 1,
+    paddingTop: 50,
     backgroundColor: "#0d1421",
     alignItems: "center",
     width: "100%",

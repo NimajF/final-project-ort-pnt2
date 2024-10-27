@@ -1,23 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Link, router } from "expo-router";
 import InfoTable from "./InfoTable";
-import {
-  Text,
-  View,
-  Image,
-  ScrollView,
-  ActivityIndicator,
-  StyleSheet,
-  Pressable,
-} from "react-native";
+import { Text, View, Image, StyleSheet, Pressable } from "react-native";
+import coinsSortAndFilter from "../utils/coinsSortAndFilter";
+import { endpoints } from "../consts/endpoints";
 import SelectForApi from "./SelectForApi";
 import { COIN_API_KEY } from "@env";
-import Feather from "@expo/vector-icons/Feather";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
 export default function TopGainers() {
   const [data, setData] = useState([]);
-  const [endpoint, setEndpoint] = useState("");
+  const [endpoint, setEndpoint] = useState(0);
   const handleLink = (id) => {
     router.push({
       pathname: "/coins/[id]",
@@ -25,13 +17,11 @@ export default function TopGainers() {
     });
   };
 
-  const handleOption = (endpoint) => {
-    setEndpoint(endpoint);
+  const handleOption = (newEndpoint) => {
+    setEndpoint(newEndpoint);
   };
 
   useEffect(() => {
-    const url =
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&category=layer-1&order=market_cap_desc&per_page=10&price_change_percentage=1h%2C24h%2C7d";
     const options = {
       method: "GET",
       headers: {
@@ -39,29 +29,46 @@ export default function TopGainers() {
         "x-cg-demo-api-key": COIN_API_KEY,
       },
     };
-    fetch(url, options)
+    fetch(endpoints[endpoint], options)
       .then((res) => res.json())
       .then((json) => setData(json))
       .catch((err) => console.error("error:" + err));
   }, []);
   useEffect(() => {
-    const options = {
-      method: "GET",
-      headers: {
-        accept: "application/json",
-        "x-cg-demo-api-key": COIN_API_KEY,
-      },
+    const fetchData = async () => {
+      const options = {
+        method: "GET",
+        headers: {
+          accept: "application/json",
+          "x-cg-demo-api-key": COIN_API_KEY,
+        },
+      };
+      try {
+        const response = await fetch(endpoints[endpoint], options);
+        const json = await response.json();
+        if (endpoint === "1") {
+          const sortedJson = json.sort(
+            (a, b) =>
+              a.price_change_percentage_24h - b.price_change_percentage_24h
+          );
+          setData(sortedJson);
+        } else {
+          setData(json);
+        }
+      } catch (err) {
+        console.error("Error fetching data: ", err);
+      }
     };
-    fetch(endpoint, options)
-      .then((res) => res.json())
-      .then((json) => setData(json))
-      .catch((err) => console.error("error:" + err));
+
+    if (endpoint) {
+      fetchData();
+    }
   }, [endpoint]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Best of Crypto 🔥</Text>
-      <SelectForApi option={handleOption} />
+      <SelectForApi handleOption={handleOption} />
       <InfoTable />
       {data && data.length > 0
         ? data.map((crypto, index) => (
@@ -153,7 +160,7 @@ const styles = StyleSheet.create({
   cryptoImage: {
     width: 25,
     height: 25,
-    marginRight: 10,
+    marginRight: 5,
   },
   cryptoNameContainer: {
     flexDirection: "row",
@@ -165,40 +172,29 @@ const styles = StyleSheet.create({
     fontFamily: "Inter_18pt-Regular",
   },
   cryptoSymbol: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: "Inter_18pt-Regular",
     fontWeight: "normal",
     color: "#888888", // Color gris para el símbolo
-    marginLeft: 1, // Añadir espacio entre el nombre y el símbolo
+    marginLeft: 1,
   },
   crypto24Change: {
     fontSize: 14,
     fontFamily: "Inter_18pt-Regular",
     fontWeight: "normal",
-    marginLeft: 10, // Añadir espacio entre el nombre y el símbolo
+    marginLeft: 10,
   },
   cryptoPrice: {
     fontSize: 16,
     marginTop: 5,
   },
-  tableHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    fontFamily: "Inter_18pt-Regular",
-  },
-  headerText: {
-    color: "#aaa",
-    fontWeight: "bold",
-    fontFamily: "Inter_18pt-Regular",
-  },
   cryptoItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 10,
+    paddingVertical: 15,
+    paddingBottom: 15,
     borderBottomWidth: 1,
-    borderBottomColor: "#3c8b88",
+    borderBottomColor: "#514866",
     fontFamily: "Inter_18pt-Regular",
   },
   rankColumn: {
@@ -210,7 +206,7 @@ const styles = StyleSheet.create({
   nameColumn: {
     width: "30%",
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     fontFamily: "Inter_18pt-Regular",
   },
   cryptoImage: {
@@ -237,6 +233,7 @@ const styles = StyleSheet.create({
   },
   marketCapColumn: {
     width: "25%",
+    fontSize: 12,
     color: "#fff",
     textAlign: "right",
     fontFamily: "Inter_18pt-Regular",
