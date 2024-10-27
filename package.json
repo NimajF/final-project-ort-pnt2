@@ -31,7 +31,11 @@
     "react-native-screens": "3.31.1",
     "react-native-toast-message": "^2.2.1",
     "react-native-web": "~0.19.10",
+<<<<<<< HEAD
     "sqlite3": "^5.1.7"
+=======
+    "@react-native-async-storage/async-storage": "1.23.1"
+>>>>>>> 92dfb20325f14eaa4ddcf2441414fdaee5f35376
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

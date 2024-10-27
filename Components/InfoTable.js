@@ -15,43 +15,48 @@ export default function InfoTable() {
 }
 
 const styles = StyleSheet.create({
-    tableHeader: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      paddingVertical: 10,
-      borderBottomWidth: 1,
-      borderBottomColor: '#3e8b5e',
-    },
-    headerText: {
-      color: '#aaa',
-      fontFamily: "Inter_18pt-Regular",
-      fontWeight: 'bold',
-    },
-    rankColumn: {
-      width: '10%',
-      color: '#fff',
-      textAlign: 'center',
-    },
-    nameColumn: {
-      width: '30%',
-      flexDirection: 'row',
-      alignItems: 'center',
-    },
-    cryptoName: {
-      color: '#fff',
-    },
-    priceColumn: {
-      width: '20%',
-      color: '#fff',
-      textAlign: 'right',
-    },
-    changeColumn: {
-      width: '15%',
-      textAlign: 'right',
-    },
-    marketCapColumn: {
-      width: '25%',
-      color: '#fff',
-      textAlign: 'right',
-    },
-  });
+  tableHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    // borderBottomColor: "#3e8b5e",
+    backgroundColor: "#5b3cce",
+    padding: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  headerText: {
+    color: "#aaa",
+    fontFamily: "Inter_18pt-Regular",
+    fontWeight: "bold",
+  },
+  rankColumn: {
+    width: "10%",
+    color: "#fff",
+    textAlign: "center",
+  },
+  nameColumn: {
+    width: "30%",
+    flexDirection: "row",
+    alignItems: "center",
+    color: "#cfcfcf",
+  },
+  cryptoName: {
+    color: "#fff",
+  },
+  priceColumn: {
+    width: "20%",
+    color: "#fff",
+    textAlign: "right",
+  },
+  changeColumn: {
+    width: "15%",
+    textAlign: "right",
+  },
+  marketCapColumn: {
+    width: "25%",
+    color: "#fff",
+    textAlign: "right",
+  },
+});

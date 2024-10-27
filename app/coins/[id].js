@@ -8,12 +8,12 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import Toast from 'react-native-root-toast';
+import Toast from "react-native-root-toast";
 import { useLocalSearchParams } from "expo-router";
 import { useState, useEffect } from "react";
 import { COIN_API_KEY } from "@env";
-import Feather from '@expo/vector-icons/Feather';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Feather from "@expo/vector-icons/Feather";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AddCoinModal from "../../Components/AddCoinModal";
 
 export default function CoinPage() {
@@ -26,12 +26,14 @@ export default function CoinPage() {
   const [isFavorite, setIsFavorite] = useState(false); // Estado para manejar si es favorito o no
 
   const handleFavorite = () => {
-    setIsFavorite(prev => !prev); // Cambia el estado de favorito
+    setIsFavorite((prev) => !prev); // Cambia el estado de favorito
     setMessage(isFavorite ? "Removed from favorites!" : "Added to favorites!"); // Mensaje de confirmación
     setToastVisible(true); // Muestra el toast
     setTimeout(() => {
       setToastVisible(false); // Oculta el toast después de 3 segundos
     }, 3000);
+
+    //
   };
 
   useEffect(() => {
@@ -61,83 +63,110 @@ export default function CoinPage() {
   if (coin.error) {
     return (
       <View>
-        <Text>Error!!!!</Text>
+        <Text>Error loading {id}!!!!</Text>
       </View>
     );
   } else {
     return (
       <View style={styles.container}>
-        <Toast visible={toastVisible} opacity={0.9} position={100} backgroundColor="#82b851" shadowColor="#000000">
+        <Toast
+          visible={toastVisible}
+          opacity={0.9}
+          position={100}
+          backgroundColor="#82b851"
+          shadowColor="#000000"
+        >
           {message}
         </Toast>
         <Image source={{ uri: coin.image.small }} style={styles.cryptoImage} />
-        <Text style={styles.title}>{coin.name} <Text style={{ color: "grey", fontWeight: "100" }}>(USD)</Text></Text>
-        
+
+        <Text style={styles.title}>
+          {coin.name}{" "}
+          <Text style={{ color: "grey", fontWeight: "100" }}>(USD)</Text>
+        </Text>
+
         {/* Botón para agregar a favoritos */}
-        <Pressable 
-          style={styles.favorite} 
-          onPress={handleFavorite} 
-        >
-          <FontAwesome 
-            name={isFavorite ? "star" : "star-o"} 
-            size={24} 
+        <Pressable style={styles.favorite} onPress={handleFavorite}>
+          <FontAwesome
+            name={isFavorite ? "star" : "star-o"}
+            size={24}
             color={isFavorite ? "#FFD700" : "#bebebe"} // Cambia el color si es favorito
           />
         </Pressable>
 
+        <Pressable style={styles.favorite} onPress={() => handleFavorite()}>
+          <FontAwesome name="star-o" size={24} color="#bebebe" />
+        </Pressable>
+
         <Text style={styles.symbol}>{coin.symbol.toUpperCase()}</Text>
-        <Text style={styles.coinRank}>Market Cap Rank <Text style={styles.coinRankSpan}>{coin.market_cap_rank}</Text></Text>
-        <Text style={styles.price}>
-          Price:{" "}
-          <Text
-            style={{
-              color:
-                coin.market_data.price_change_percentage_24h > 0
-                  ? "#3bb650"
-                  : "#be4848",
-            }}
-          >
-            ${coin.market_data.current_price.usd}
-          </Text>
+        <Text style={styles.coinRank}>
+          Market Cap Rank{" "}
+          <Text style={styles.coinRankSpan}>{coin.market_cap_rank}</Text>
         </Text>
-        <Text style={styles.priceChange}>
-          {" "}
-          24h Change:
-          <Text
-            style={{
-              color:
-              coin.market_data.price_change_percentage_24h > 0
-                  ? "#3bb650"
-                  : "#be4848",
-            }}
-          >
+        <View style={styles.pricesDiv}>
+          <Text style={styles.price}>
+            Price:{" "}
+            <Text
+              style={{
+                color:
+                  coin.market_data.price_change_percentage_24h > 0
+                    ? "#3bb650"
+                    : "#be4848",
+              }}
+            >
+              ${coin.market_data.current_price.usd}
+            </Text>
+          </Text>
+          <Text style={styles.priceChange}>
             {" "}
-            {coin.market_data.price_change_percentage_24h.toFixed(2)}% {" "}
-            <Feather name={coin.market_data.price_change_percentage_24h > 0 ? "trending-up" : "trending-down"} size={18} color={coin.market_data.price_change_percentage_24h > 0
-                  ? "#3bb650"
-                  : "#be4848"} />
+            24h Change:
+            <Text
+              style={{
+                color:
+                  coin.market_data.price_change_percentage_24h > 0
+                    ? "#3bb650"
+                    : "#be4848",
+              }}
+            >
+              {" "}
+              {coin.market_data.price_change_percentage_24h.toFixed(2)}%{" "}
+              <Feather
+                name={
+                  coin.market_data.price_change_percentage_24h > 0
+                    ? "trending-up"
+                    : "trending-down"
+                }
+                size={18}
+                color={
+                  coin.market_data.price_change_percentage_24h > 0
+                    ? "#3bb650"
+                    : "#be4848"
+                }
+              />
+            </Text>
           </Text>
-        </Text>
-        <Text style={styles.priceChange}>
-          {" "}
-          24h Price Change:
-          <Text
-            style={{
-              color:
-              coin.market_data.price_change_percentage_24h > 0
-                  ? "#3bb650"
-                  : "#be4848",
-            }}
-          >
+          <Text style={styles.priceChange}>
             {" "}
-            {coin.market_data.price_change_24h.toFixed(3)}
+            24h Price Change:
+            <Text
+              style={{
+                color:
+                  coin.market_data.price_change_percentage_24h > 0
+                    ? "#3bb650"
+                    : "#be4848",
+              }}
+            >
+              {" "}
+              {coin.market_data.price_change_24h.toFixed(3)}
+            </Text>
           </Text>
-        </Text>
+        </View>
         <Text style={styles.description}>
           {coin.description.en
             ? coin.description.en.split(". ")[0]
             : "No description available."}
         </Text>
+
         <Pressable style={styles.button} onPress={() => setModalVisible(true)}>
           <Text style={styles.buttonText}>Add {coin.name}</Text>
         </Pressable>
@@ -157,6 +186,7 @@ export default function CoinPage() {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
+    fontFamily: "Inter_18pt-Regular",
     flex: 1,
     backgroundColor: "#0d1421",
     padding: 20,
@@ -166,6 +196,8 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginBottom: 20,
+    backgroundColor: "#ffffff11",
+    borderRadius: 10,
   },
   title: {
     fontFamily: "Inter_18pt-Regular",
@@ -197,6 +229,12 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     color: "#aaa",
     marginBottom: 20,
+  },
+  pricesDiv: {
+    backgroundColor: "#272d4d7e",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
   },
   price: {
     fontSize: 18,
