@@ -10,10 +10,11 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "~3.2.3",
-    "@react-native-picker/picker": "^2.8.1",
+    "@react-native-async-storage/async-storage": "^1.23.1",
+    "@react-native-picker/picker": "^2.7.5",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
-    "expo": "~51.0.28",
+    "expo": "~51.0.38",
     "expo-blur": "~13.0.2",
     "expo-constants": "~16.0.2",
     "expo-font": "~12.0.10",
@@ -31,11 +32,7 @@
     "react-native-screens": "3.31.1",
     "react-native-toast-message": "^2.2.1",
     "react-native-web": "~0.19.10",
-<<<<<<< HEAD
     "sqlite3": "^5.1.7"
-=======
-    "@react-native-async-storage/async-storage": "1.23.1"
->>>>>>> 92dfb20325f14eaa4ddcf2441414fdaee5f35376
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

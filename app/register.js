@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { View, Alert, ActivityIndicator } from "react-native";
 import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
-import { router } from "expo-router";
+import { router } from "expo-router"; // Asegúrate de tener esto configurado correctamente
 
 export default function Register() {
   const initialState = {
@@ -40,12 +40,28 @@ export default function Register() {
     setError(null);
 
     try {
-      // Aquí puedes hacer la llamada a la API para registrar al usuario
-      // Simulando un registro exitoso
+      const response = await fetch("https://67030d8fbd7c8c1ccd407a1d.mockapi.io/api/prueba_de_usuario", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+          role: "user", // Puedes establecer un rol predeterminado
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error en el registro");
+      }
+
+      const data = await response.json();
       Alert.alert("Éxito", "Registro exitoso");
       router.push("/login"); // Redirige al login después del registro
     } catch (err) {
-      setError("Error en el registro");
+      setError("Error en el registro: " + err.message);
     } finally {
       setLoading(false);
     }
