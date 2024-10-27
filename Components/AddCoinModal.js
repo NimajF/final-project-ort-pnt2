@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { coinAmountConverter } from "../utils/coinAmountConverter"; // Cambiado a importación nombrada
+import { useEffect, useState, useContext } from "react";
+import { UserPortfolioContext } from "../contexts/UserPortfolioContext";
+import coinAmountConverter from "../utils/coinAmountConverter";
 import {
   Modal,
   Pressable,
@@ -18,8 +21,7 @@ export default function AddCoinModal({
   toastVisible,
   infoAdded,
 }) {
-  const initialState = new Date();
-  const [date, setDate] = useState(initialState);
+  const { portfolio, addOrUpdateCoin } = useContext(UserPortfolioContext);
   const [amount, setAmount] = useState(0);
   const [userCash, setUserCash] = useState(0);
 
@@ -29,12 +31,25 @@ export default function AddCoinModal({
       Number(userCash), // Conversión a número
       coin.market_data.current_price.usd
     );
-    infoAdded(`Successfully added ${amount}x ${coin.symbol} - ${userCash} USDT`);
+    infoAdded(
+      `Successfully added ${amount}x ${coin.symbol} - ${userCash} USDT`
+    );
+    infoAdded(`Successfully added ${amount}x ${coin.symbol} - ${userCash}usdt`);
+    addOrUpdateCoin(
+      coin.symbol,
+      amount,
+      coin.market_data.current_price.usd,
+      userCash,
+      coin.id,
+      coin.image?.small
+    );
     setModalVisible(false);
     setToastVisible(true);
     setTimeout(() => {
       setToastVisible(false);
     }, 3000);
+    setAmount("");
+    setUserCash(0);
   };
 
   useEffect(() => {
@@ -66,7 +81,7 @@ export default function AddCoinModal({
             </Text>
           </View>
           <Text style={styles.modalDescription}>
-            {date.toLocaleDateString()}
+            {/* {date.toLocaleDateString()} */}
           </Text>
           <Text style={styles.label}>Enter your inversion (USDT)</Text>
           <TextInput
@@ -76,6 +91,17 @@ export default function AddCoinModal({
             keyboardType="numeric"
             placeholder={`Enter your inversion`}
           />
+          <View style={styles.userCashDiv}>
+            <Text style={styles.dollarSign}>$ </Text>
+            <TextInput
+              style={styles.input}
+              value={userCash}
+              onChangeText={setUserCash}
+              inputMode="numeric"
+              placeholder={`Enter your inversion`}
+            />
+          </View>
+
           <Pressable
             style={[styles.button, styles.buttonAdd]}
             onPress={handleAddCoin}
@@ -112,7 +138,7 @@ const styles = StyleSheet.create({
     height: 18,
   },
   modalView: {
-    width: '80%',
+    width: "80%",
     margin: 20,
     backgroundColor: "#29272a",
     borderRadius: 20,
@@ -124,24 +150,25 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   modalTitleContainer: {
-    position: 'absolute', 
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     zIndex: 1,
-    width: '100%',
-    backgroundColor: '#181818', 
+    width: "100%",
+    backgroundColor: "#181818",
     padding: 15,
-    borderTopLeftRadius: 10, 
+    borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
   modalTitle: {
-    color: '#f0f0f0', 
+    color: "#f0f0f0",
+    width: "100%",
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
     fontFamily: "Inter_18pt-Regular",
   },
   modalText: {
@@ -159,6 +186,18 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
     marginTop: 35,
   },
+  userCashDiv: {
+    width: "100%",
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "baseline",
+    gap: 5,
+  },
+  dollarSign: {
+    fontFamily: "Roboto-Regular",
+    color: "#388a38",
+    fontSize: 18,
+  },
   label: {
     fontSize: 14,
     marginBottom: 10,
@@ -167,9 +206,10 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    width: 100,
+    width: 115,
     padding: 10,
     borderRadius: 5,
+    fontSize: 10,
     marginBottom: 20,
     backgroundColor: "#3a3a3c",
     fontFamily: "Inter_18pt-Regular",

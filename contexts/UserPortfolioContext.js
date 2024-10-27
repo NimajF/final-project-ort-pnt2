@@ -1,53 +1,117 @@
-import { unloadAllAsync } from "expo-font";
 import { createContext, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const UserPortFolioContext = createContext();
+export const UserPortfolioContext = createContext();
 
-export const UserPortFolioProvider = ({ children }) => {
+export const UserPortfolioProvider = ({ children }) => {
   const initialState = {
-    coins: {},
-    total: 0,
+    coins: [],
+    totalInvestment: 0,
   };
   const [portfolio, setPortfolio] = useState(initialState);
 
   useEffect(() => {
-    const storedPortfolio = localStorage.getItem("userPortfolio");
-    if (storedPortfolio) {
-      setPortfolio(JSON.parse(storedPortfolio));
-    }
+    console.log(portfolio);
+    const loadPortfolio = async () => {
+      try {
+        const storedPortfolio = await AsyncStorage.getItem("userPortfolio");
+        if (storedPortfolio) {
+          setPortfolio(JSON.parse(storedPortfolio));
+        }
+      } catch (error) {
+        console.error("Error loading portfolio from AsyncStorage:", error);
+      }
+    };
+    loadPortfolio();
   }, []);
+
   useEffect(() => {
-    localStorage.setItem("userPortfolio", JSON.stringify(portfolio));
+    const savePortfolio = async () => {
+      try {
+        await AsyncStorage.setItem("userPortfolio", JSON.stringify(portfolio));
+      } catch (error) {
+        console.error("Error saving portfolio to AsyncStorage:", error);
+      }
+    };
+
+    savePortfolio();
   }, [portfolio]);
 
-  const addOrUpdateCoin = (coinName, amount, date, price) => {
-    setPortfolio(prevPortfolio => {
-        const updatedCoins = { ...prevPortfolio.coins }; 
+  const addOrUpdateCoin = (
+    coinName,
+    amount,
+    price,
+    inversion,
+    coinId,
+    coinImage
+  ) => {
+    const date = new Date().toISOString();
+    setPortfolio((prevPortfolio) => {
+      const updatedCoins = Array.isArray(prevPortfolio.coins)
+        ? [...prevPortfolio.coins]
+        : [];
+      const coinIndex = updatedCoins.findIndex(
+        (coin) => coin.symbol === coinName
+      );
 
-        if (updatedCoins[coinName]) {
-            updatedCoins[coinName].amount += amount;
-            updatedCoins[coinName].date = date;
-            updatedCoins[coinName].price = price;
-        } else {
-            updatedCoins[coinName] = { amount, date, price };
-        }
+      if (coinIndex !== -1) {
+        const existingCoin = updatedCoins[coinIndex];
+        updatedCoins[coinIndex] = {
+          ...existingCoin,
+          transactions: [
+            ...existingCoin.transactions,
+            {
+              amount: parseFloat(amount),
+              price: parseFloat(price),
+              transactionInversion: parseFloat(inversion),
+              date,
+            },
+          ],
+          totalAmount:
+            parseFloat(existingCoin.totalAmount) + parseFloat(amount),
+          totalCoinInversion:
+            parseFloat(existingCoin.totalCoinInversion) + parseFloat(inversion),
+        };
+      } else {
+        updatedCoins.push({
+          symbol: coinName,
+          coinId: coinId,
+          coinImage,
+          transactions: [
+            {
+              amount: parseFloat(amount),
+              price: parseFloat(price),
+              transactionInversion: parseFloat(inversion),
+              date,
+            },
+          ],
+          totalAmount: parseFloat(amount),
+          totalCoinInversion: parseFloat(inversion),
+        });
+      }
 
-        return { ...prevPortfolio, coins: updatedCoins };
+      return {
+        ...prevPortfolio,
+        coins: updatedCoins,
+        totalInvestment:
+          parseFloat(prevPortfolio.totalInvestment || 0) +
+          parseFloat(inversion),
+      };
     });
-};
-
-  const getAmountOfXCoin = (coinName) => {
-    const total = Object.keys(portfolio.coins)
-    console.log(total)
-
-    return total;
   };
 
+  // const getAmountOfXCoin = (coinName) => {
+  //   const total = Object.keys(portfolio.coins);
+  //   console.log(total);
+
+  //   return total;
+  // };
+
   return (
-    <UserPortFolioContext.Provider
+    <UserPortfolioContext.Provider
       value={{ portfolio, setPortfolio, addOrUpdateCoin }}
     >
       {children}
-    </UserPortFolioContext.Provider>
+    </UserPortfolioContext.Provider>
   );
 };
