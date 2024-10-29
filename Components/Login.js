@@ -1,7 +1,14 @@
-import { useState } from "react";
-import { router } from "expo-router";
+import { useState, useContext } from "react";
+import { router, useRouter } from "expo-router";
+import { UserSessionContext } from "../contexts/UserSessionContext";
 import { View, Alert } from "react-native";
-import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 
 export default function Login() {
   const initialState = {
@@ -9,23 +16,24 @@ export default function Login() {
     email: "",
     password: "",
   };
+  const { login } = useContext(UserSessionContext);
+  const router = useRouter();
   const [user, setUser] = useState(initialState);
-  const { username, email, password } = user;
+  const { username, password } = user;
 
   const handleChange = (name, value) => {
     setUser({ ...user, [name]: value });
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     Alert.alert(
-      "User Information",
-      `Username: ${user.username}\nEmail: ${user.email}\nPassword: ${user.password}`,
-      [{ text: "OK" }]
+      123
+      // "User Information",
+      // `Username: ${user.username}\nPassword: ${user.password}`,
+      // [{ text: "OK" }]
     );
-  };
-
-  const handleReturnHome = () => {
-    router.push("/");
+    await login(user.username, user.password);
+    return;
   };
 
   return (
@@ -40,15 +48,7 @@ export default function Login() {
         keyboardType="default"
         autoCapitalize="none"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        placeholderTextColor="#aaa"
-        value={email}
-        onChangeText={(value) => handleChange("email", value)}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -58,18 +58,20 @@ export default function Login() {
         secureTextEntry={true}
         autoCapitalize="none"
       />
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+      <Pressable style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginButtonText}>Login</Text>
-      </TouchableOpacity>
+      </Pressable>
 
-      <TouchableOpacity onPress={() => router.push("/register")} style={styles.registerLink}>
+      <TouchableOpacity
+        onPress={() => router.push("/register")}
+        style={styles.registerLink}
+      >
         <Text style={styles.registerText}>
-          Don't have an account?{" "}
-          <Text style={styles.boldText}>Sign Up</Text>
+          Don't have an account? <Text style={styles.boldText}>Sign Up</Text>
         </Text>
       </TouchableOpacity>
-      
-      <TouchableOpacity onPress={handleReturnHome}>
+
+      <TouchableOpacity onPress={() => router.push("/")}>
         <Text style={styles.returnHome}>Return to home </Text>
       </TouchableOpacity>
     </View>
@@ -131,6 +133,6 @@ const styles = StyleSheet.create({
     color: "#dddddd",
     marginTop: 10,
     fontSize: 14,
-    textDecorationLine: 'underline', // Subrayado para destacar el enlace
+    textDecorationLine: "underline", // Subrayado para destacar el enlace
   },
 });

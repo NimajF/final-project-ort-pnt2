@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { View, Alert, ActivityIndicator } from "react-native";
+import { UserSessionContext } from "../contexts/UserSessionContext";
 import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router"; // Asegúrate de tener esto configurado correctamente
 
 export default function Register() {
@@ -11,11 +13,20 @@ export default function Register() {
     confirmPassword: "",
   };
 
+  const { register } = useContext(UserSessionContext);
   const [user, setUser] = useState(initialState);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const { username, email, password, confirmPassword } = user;
+
+  useEffect(() => {
+    const getStatus = async () => {
+      const status = await AsyncStorage.getItem("isAuthenticated");
+      if (status) return router.push("/");
+    };
+    getStatus();
+  }, []);
 
   const handleChange = (name, value) => {
     setUser({ ...user, [name]: value });
@@ -35,36 +46,10 @@ export default function Register() {
 
   const handleRegister = async () => {
     if (!validateInputs()) return;
-
+    register({ username, email, password });
     setLoading(true);
     setError(null);
-
-    try {
-      const response = await fetch("https://67030d8fbd7c8c1ccd407a1d.mockapi.io/api/prueba_de_usuario", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-          role: "user", // Puedes establecer un rol predeterminado
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Error en el registro");
-      }
-
-      const data = await response.json();
-      Alert.alert("Éxito", "Registro exitoso");
-      router.push("/login"); // Redirige al login después del registro
-    } catch (err) {
-      setError("Error en el registro: " + err.message);
-    } finally {
-      setLoading(false);
-    }
+    return;
   };
 
   return (
@@ -106,7 +91,11 @@ export default function Register() {
         secureTextEntry={true}
         autoCapitalize="none"
       />
-      <TouchableOpacity style={styles.registerButton} onPress={handleRegister} disabled={loading}>
+      <TouchableOpacity
+        style={styles.registerButton}
+        onPress={handleRegister}
+        disabled={loading}
+      >
         {loading ? (
           <ActivityIndicator color="#fff" />
         ) : (
@@ -167,7 +156,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   errorText: {
-    color: 'red',
+    color: "red",
     marginTop: 10,
   },
 });

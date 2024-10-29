@@ -2,6 +2,7 @@ import { Slot, useSegments } from "expo-router";
 import { RootSiblingParent } from "react-native-root-siblings";
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
+import { UserSessionProvider } from "../contexts/UserSessionContext";
 import Toast from "react-native-toast-message";
 import * as SplashScreen from "expo-splash-screen";
 import { View, StyleSheet } from "react-native";
@@ -26,7 +27,8 @@ const Layout = ({ children }) => {
     return null;
   } else {
     return (
-      <UserPortfolioProvider>
+      <UserSessionProvider>
+       {/* <UserPortfolioProvider> */}
         <RootSiblingParent>
           <View
             style={[
@@ -39,7 +41,8 @@ const Layout = ({ children }) => {
             <Toast />
           </View>
         </RootSiblingParent>
-      </UserPortfolioProvider>
+       {/* </UserPortfolioProvider> */}
+      </UserSessionProvider>
     );
   }
 };
