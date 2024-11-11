@@ -16,64 +16,82 @@ export default function Login() {
     email: "",
     password: "",
   };
-  const { login } = useContext(UserSessionContext);
+  const { login, logout, user } = useContext(UserSessionContext);
   const router = useRouter();
-  const [user, setUser] = useState(initialState);
-  const { username, password } = user;
+  const [userData, setUserData] = useState(initialState);
+  const { username, password } = userData;
 
   const handleChange = (name, value) => {
-    setUser({ ...user, [name]: value });
+    setUserData({ ...userData, [name]: value });
   };
 
   const handleLogin = async () => {
     Alert.alert(
-      123
-      // "User Information",
-      // `Username: ${user.username}\nPassword: ${user.password}`,
-      // [{ text: "OK" }]
+      "Información del Usuario",
+      `Username: ${userData.username}\nPassword: ${userData.password}`,
+      [{ text: "OK" }]
     );
-    await login(user.username, user.password);
-    return;
+    await login(userData.username, userData.password);
+  };
+
+  const handleLogout = async () => {
+    await logout();
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Log into your account</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        placeholderTextColor="#aaa"
-        value={username}
-        onChangeText={(value) => handleChange("username", value)}
-        keyboardType="default"
-        autoCapitalize="none"
-      />
+      {user ? (
+        // Si el usuario está autenticado, muestra su nombre y botón de cerrar sesión
+        <View>
+          <Text style={styles.title}>Bienvenido, {user.username}!</Text>
+          <Pressable style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutButtonText}>Cerrar Sesión</Text>
+          </Pressable>
+        </View>
+      ) : (
+        // Si no está autenticado, muestra el formulario de inicio de sesión
+        <View>
+          <Text style={styles.title}>Inicia sesión en tu cuenta</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Username"
+            placeholderTextColor="#aaa"
+            value={username}
+            onChangeText={(value) => handleChange("username", value)}
+            keyboardType="default"
+            autoCapitalize="none"
+          />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#aaa"
-        value={password}
-        onChangeText={(value) => handleChange("password", value)}
-        secureTextEntry={true}
-        autoCapitalize="none"
-      />
-      <Pressable style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginButtonText}>Login</Text>
-      </Pressable>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            placeholderTextColor="#aaa"
+            value={password}
+            onChangeText={(value) => handleChange("password", value)}
+            secureTextEntry={true}
+            autoCapitalize="none"
+          />
+          <Pressable style={styles.loginButton} onPress={handleLogin}>
+            <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
+          </Pressable>
 
-      <TouchableOpacity
-        onPress={() => router.push("/register")}
-        style={styles.registerLink}
-      >
-        <Text style={styles.registerText}>
-          Don't have an account? <Text style={styles.boldText}>Sign Up</Text>
-        </Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => router.push("/register")}
+            style={styles.registerLink}
+          >
+            <Text style={styles.registerText}>
+              ¿No tienes una cuenta?{" "}
+              <Text style={styles.boldText}>Regístrate</Text>
+            </Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push("/")}>
-        <Text style={styles.returnHome}>Return to home </Text>
-      </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push("/")}>
+            <Text style={styles.returnHome}>
+              Regresar a la página de inicio
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
@@ -113,6 +131,19 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   loginButtonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+  },
+  logoutButton: {
+    width: "100%",
+    backgroundColor: "#f44336", // Color del botón de cerrar sesión
+    padding: 15,
+    borderRadius: 10,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  logoutButtonText: {
     fontSize: 18,
     color: "#fff",
     fontWeight: "bold",

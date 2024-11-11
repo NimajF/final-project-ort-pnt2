@@ -26,13 +26,11 @@ export const UserSessionProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
-    
     try {
       const response = await fetch(
         "https://66fc939ac3a184a84d175ec7.mockapi.io/api/users"
       );
       const data = await response.json();
-console.log(data);
       const user = data.find(
         (u) => u.username === username && u.password === password
       );
@@ -92,9 +90,22 @@ console.log(data);
     }
   };
 
+  // Función para cerrar sesión
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem("isAuthenticated");
+      await AsyncStorage.removeItem("userData");
+      setUser(null);
+      setStatus("unauthenticated");
+      router.push("/login"); // Redirigir a la pantalla de login
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+  };
+
   return (
     <UserSessionContext.Provider
-      value={{ login, register, status, user, setUser }}
+      value={{ login, register, logout, status, user, setUser }}
     >
       {children}
     </UserSessionContext.Provider>

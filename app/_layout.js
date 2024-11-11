@@ -28,20 +28,20 @@ const Layout = ({ children }) => {
   } else {
     return (
       <UserSessionProvider>
-       {/* <UserPortfolioProvider> */}
-        <RootSiblingParent>
-          <View
-            style={[
-              styles.container,
-              { paddingBottom: segments && segments[0] === "login" ? 0 : 60 },
-            ]}
-          >
-            <Slot />
-            {segments && segments[0] !== "login" ? <Navbar /> : null}
-            <Toast />
-          </View>
-        </RootSiblingParent>
-       {/* </UserPortfolioProvider> */}
+        <UserPortfolioProvider>
+          <RootSiblingParent>
+            <View
+              style={[
+                styles.container,
+                { paddingBottom: segments && segments[0] === "login" ? 0 : 60 },
+              ]}
+            >
+              <Slot />
+              {segments && segments[0] !== "login" ? <Navbar /> : null}
+              <Toast />
+            </View>
+          </RootSiblingParent>
+        </UserPortfolioProvider>
       </UserSessionProvider>
     );
   }
