@@ -103,9 +103,25 @@ export const UserSessionProvider = ({ children }) => {
     }
   };
 
+
+
+  const updatePassword = async (newPassword) => {
+    if (!user) return;
+
+    try {
+      const updatedUser = { ...user, password: newPassword };
+      setUser(updatedUser);
+      await AsyncStorage.setItem("userData", JSON.stringify(updatedUser));
+      alert("Contraseña actualizada exitosamente");
+    } catch (error) {
+      console.error("Error al actualizar la contraseña:", error);
+      alert("No se pudo actualizar la contraseña");
+    }
+  };
+
   return (
     <UserSessionContext.Provider
-      value={{ login, register, logout, status, user, setUser }}
+      value={{ login, register, logout, status, user, setUser, updatePassword }}
     >
       {children}
     </UserSessionContext.Provider>

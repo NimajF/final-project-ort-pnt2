@@ -34,7 +34,8 @@ export default function TopGainers() {
       .then((res) => res.json())
       .then((json) => setData(json))
       .catch((err) => console.error("error:" + err));
-  }, []);
+  }, [endpoint]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -133,13 +134,13 @@ export default function TopGainers() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1A2E47", // Fondo azul oscuro
+    backgroundColor: "#1A2E47",
     fontFamily: "Inter_18pt-Regular",
   },
   topSection: {
     padding: 20,
     paddingTop: 40,
-    backgroundColor: "#1A2E47", // Fondo azul oscuro
+    backgroundColor: "#1A2E47", 
   },
   title: {
     fontFamily: "Inter_18pt-Regular",
@@ -154,22 +155,22 @@ const styles = StyleSheet.create({
   },
   bottomSection: {
     flex: 1,
-    width: "100%", // Ocupa todo el ancho de la pantalla
-    backgroundColor: "#FFFFFF", // Fondo blanco para la tabla
-    borderTopLeftRadius: 15, // Borde redondeado en la esquina superior izquierda
-    borderTopRightRadius: 15, // Borde redondeado en la esquina superior derecha
-    paddingTop: 20, // Espaciado solo en la parte superior para el texto del título
-    overflow: "hidden", // Evita que elementos internos se salgan del borde redondeado
+    width: "100%",
+    backgroundColor: "#FFFFFF", 
+    borderTopLeftRadius: 15, 
+    borderTopRightRadius: 15, 
+    paddingTop: 20, 
+    overflow: "hidden", 
   },
   cryptoItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF", // Fondo blanco para cada item de la criptomoneda
+    backgroundColor: "#FFFFFF", 
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,
     borderBottomWidth: 1,
-    borderBottomColor: "#E0E0E0", // Línea de separación entre elementos
+    borderBottomColor: "#E0E0E0", 
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,

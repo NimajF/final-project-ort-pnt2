@@ -1,14 +1,7 @@
-import { useState, useContext } from "react";
-import { router, useRouter } from "expo-router";
+import { useState, useContext, useEffect } from "react";
+import { useRouter } from "expo-router";
 import { UserSessionContext } from "../contexts/UserSessionContext";
-import { View, Alert } from "react-native";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Pressable,
-} from "react-native";
+import { View, Alert, StyleSheet, Text, TextInput, TouchableOpacity, Pressable } from "react-native";
 
 export default function Login() {
   const initialState = {
@@ -20,6 +13,13 @@ export default function Login() {
   const router = useRouter();
   const [userData, setUserData] = useState(initialState);
   const { username, password } = userData;
+
+  // Este efecto observa el estado de `user` y redirige al perfil si el usuario está autenticado
+  useEffect(() => {
+    if (user) {
+      router.push("/profile");
+    }
+  }, [user]);
 
   const handleChange = (name, value) => {
     setUserData({ ...userData, [name]: value });
