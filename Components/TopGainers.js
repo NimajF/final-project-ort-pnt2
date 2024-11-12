@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { Link, router } from "expo-router";
 import InfoTable from "./InfoTable";
 import { Text, View, Image, StyleSheet, Pressable } from "react-native";
@@ -10,6 +10,7 @@ import { COIN_API_KEY } from "@env";
 export default function TopGainers() {
   const [data, setData] = useState([]);
   const [endpoint, setEndpoint] = useState(0);
+
   const handleLink = (id) => {
     router.push({
       pathname: "/coins/[id]",
@@ -34,6 +35,7 @@ export default function TopGainers() {
       .then((json) => setData(json))
       .catch((err) => console.error("error:" + err));
   }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       const options = {
@@ -67,59 +69,63 @@ export default function TopGainers() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Best of Crypto 🔥</Text>
+      <View style={styles.topSection}>
+        <Text style={styles.title}>Trending Market</Text>
+      </View>
       <SelectForApi handleOption={handleOption} />
-      <InfoTable />
-      {data && data.length > 0
-        ? data.map((crypto, index) => (
-            <Pressable key={index} onPress={() => handleLink(crypto.id)}>
-              <View style={styles.cryptoItem}>
-                <Text style={styles.rankColumn}>{index + 1}</Text>
-                <View style={styles.nameColumn}>
-                  <Image
-                    source={{ uri: crypto.image }}
-                    style={styles.cryptoImage}
-                  />
-                  <Text style={styles.cryptoName}>
-                    {crypto.name}{" "}
-                    <Text style={{ color: "grey", marginLeft: 2 }}>
-                      {crypto.symbol.toUpperCase()}
+      <View style={styles.bottomSection}>
+        <InfoTable />
+        {data && data.length > 0
+          ? data.map((crypto, index) => (
+              <Pressable key={index} onPress={() => handleLink(crypto.id)}>
+                <View style={styles.cryptoItem}>
+                  <Text style={styles.rankColumn}>{index + 1}</Text>
+                  <View style={styles.nameColumn}>
+                    <Image
+                      source={{ uri: crypto.image }}
+                      style={styles.cryptoImage}
+                    />
+                    <Text style={styles.cryptoName}>
+                      {crypto.name}{" "}
+                      <Text style={{ color: "grey", marginLeft: 2 }}>
+                        {crypto.symbol.toUpperCase()}
+                      </Text>
                     </Text>
+                  </View>
+                  <Text
+                    style={[
+                      styles.priceColumn,
+                      {
+                        color:
+                          crypto.price_change_percentage_24h_in_currency > 0
+                            ? "#3bb650"
+                            : "#be4848",
+                      },
+                    ]}
+                  >
+                    ${crypto.current_price.toLocaleString()}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.changeColumn,
+                      {
+                        color:
+                          crypto.price_change_percentage_24h_in_currency > 0
+                            ? "#3bb650"
+                            : "#be4848",
+                      },
+                    ]}
+                  >
+                    {crypto.price_change_percentage_24h_in_currency.toFixed(2)}%
+                  </Text>
+                  <Text style={styles.marketCapColumn}>
+                    ${crypto.market_cap.toLocaleString()}
                   </Text>
                 </View>
-                <Text
-                  style={[
-                    styles.priceColumn,
-                    {
-                      color:
-                        crypto.price_change_percentage_24h_in_currency > 0
-                          ? "#3bb650"
-                          : "#be4848",
-                    },
-                  ]}
-                >
-                  ${crypto.current_price.toLocaleString()}
-                </Text>
-                <Text
-                  style={[
-                    styles.changeColumn,
-                    {
-                      color:
-                        crypto.price_change_percentage_24h_in_currency > 0
-                          ? "#3bb650"
-                          : "#be4848",
-                    },
-                  ]}
-                >
-                  {crypto.price_change_percentage_24h_in_currency.toFixed(2)}%
-                </Text>
-                <Text style={styles.marketCapColumn}>
-                  ${crypto.market_cap.toLocaleString()}
-                </Text>
-              </View>
-            </Pressable>
-          ))
-        : null}
+              </Pressable>
+            ))
+          : null}
+        </View>
     </View>
   );
 }
@@ -127,30 +133,43 @@ export default function TopGainers() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
-    backgroundColor: "#101929",
-    width: "100%",
+    backgroundColor: "#1A2E47", // Fondo azul oscuro
     fontFamily: "Inter_18pt-Regular",
+  },
+  topSection: {
+    padding: 20,
+    paddingTop: 40,
+    backgroundColor: "#1A2E47", // Fondo azul oscuro
   },
   title: {
     fontFamily: "Inter_18pt-Regular",
-    width: 220,
-    borderRadius: 10,
-    fontSize: 24,
-    textAlign: "start",
+    fontSize: 35,
+    fontWeight: "700",
+    textAlign: "center",
     marginBottom: 20,
     color: "#FFF",
-    backgroundColor: "#524083",
-    border: "1px solid #2a1d50",
-    padding: 10,
+    paddingVertical: 15,
+    borderRadius: 15,
+    overflow: "hidden",
+  },
+  bottomSection: {
+    flex: 1,
+    width: "100%", // Ocupa todo el ancho de la pantalla
+    backgroundColor: "#FFFFFF", // Fondo blanco para la tabla
+    borderTopLeftRadius: 15, // Borde redondeado en la esquina superior izquierda
+    borderTopRightRadius: 15, // Borde redondeado en la esquina superior derecha
+    paddingTop: 20, // Espaciado solo en la parte superior para el texto del título
+    overflow: "hidden", // Evita que elementos internos se salgan del borde redondeado
   },
   cryptoItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#121b2c",
+    backgroundColor: "#FFFFFF", // Fondo blanco para cada item de la criptomoneda
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E0E0E0", // Línea de separación entre elementos
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -168,38 +187,12 @@ const styles = StyleSheet.create({
   },
   cryptoName: {
     fontSize: 16,
-    color: "#ffffff",
-    fontFamily: "Inter_18pt-Regular",
-  },
-  cryptoSymbol: {
-    fontSize: 12,
-    fontFamily: "Inter_18pt-Regular",
-    fontWeight: "normal",
-    color: "#888888", // Color gris para el símbolo
-    marginLeft: 1,
-  },
-  crypto24Change: {
-    fontSize: 14,
-    fontFamily: "Inter_18pt-Regular",
-    fontWeight: "normal",
-    marginLeft: 10,
-  },
-  cryptoPrice: {
-    fontSize: 16,
-    marginTop: 5,
-  },
-  cryptoItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 15,
-    paddingBottom: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#514866",
+    color: "#000000",
     fontFamily: "Inter_18pt-Regular",
   },
   rankColumn: {
     width: "10%",
-    color: "#fff",
+    color: "#000000",
     textAlign: "center",
     fontFamily: "Inter_18pt-Regular",
   },
@@ -207,16 +200,6 @@ const styles = StyleSheet.create({
     width: "30%",
     flexDirection: "row",
     alignItems: "flex-start",
-    fontFamily: "Inter_18pt-Regular",
-  },
-  cryptoImage: {
-    width: 24,
-    height: 24,
-    marginRight: 8,
-    fontFamily: "Inter_18pt-Regular",
-  },
-  cryptoName: {
-    color: "#fff",
     fontFamily: "Inter_18pt-Regular",
   },
   priceColumn: {
@@ -234,7 +217,7 @@ const styles = StyleSheet.create({
   marketCapColumn: {
     width: "25%",
     fontSize: 12,
-    color: "#fff",
+    color: "#000000",
     textAlign: "right",
     fontFamily: "Inter_18pt-Regular",
     fontWeight: "lighter",

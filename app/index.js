@@ -6,7 +6,6 @@ export default function App() {
   return (
     <ScrollView style={styles.scroll}>
       <View>
-        <Text>Opsdaden up App.js to start working on your app!</Text>
         <TopGainers />
       </View>
     </ScrollView>
