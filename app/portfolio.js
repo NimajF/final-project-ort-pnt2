@@ -1,9 +1,13 @@
 import { ImageBackground, View, StyleSheet, Text } from "react-native";
 import Portfolio from "../Components/Portfolio";
+import FavoriteList from "./FavoriteList";
 
 export default function portfolio() {
   return (
-    <Portfolio/>
+    <View>
+        <Portfolio/>
+        <FavoriteList />
+    </View>
   );
 }
 

@@ -20,12 +20,7 @@ export function Navbar(){
           <Pressable onPress={() => router.push("/")}>
             <Text><Entypo style={[styles.navIcon, {color: iconColor("/")}]} name="home" size={26} /></Text>
           </Pressable>
-          
-          <Pressable onPress={() => router.push("/favorites")}>
-            <AntDesign style={[styles.navIcon, { color: iconColor('/favorites') }]} name="staro" size={26} />
-          </Pressable>
-
-          
+                    
           {/* Botón de Portafolio */}
           <Pressable onPress={() => router.push("/portfolio")}>
             <Text><FontAwesome6 style={[styles.navIcon, {color: iconColor("/portfolio")}]} name="book" size={26} /></Text>

@@ -1,25 +1,20 @@
 import { useState, useContext } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image } from "react-native";
 import { UserSessionContext } from "../contexts/UserSessionContext";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function Profile() {
   const { user, updatePassword, logout } = useContext(UserSessionContext);
   const [showPassword, setShowPassword] = useState(false);
-  const [isChangingPassword, setIsChangingPassword] = useState(false); // Estado para mostrar el formulario de cambio de contraseña
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
     confirmNewPassword: "",
   });
-  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
-  };
-
-  const toggleShowNewPassword = () => {
-    setShowNewPassword(!showNewPassword);
   };
 
   const handlePasswordChange = (name, value) => {
@@ -42,32 +37,36 @@ export default function Profile() {
       return;
     }
 
-    // Llama a la función para actualizar la contraseña en el contexto
     updatePassword(newPassword);
     Alert.alert("Éxito", "La contraseña ha sido cambiada exitosamente.");
-    setIsChangingPassword(false); // Cierra el formulario de cambio de contraseña
+    setIsChangingPassword(false);
   };
 
   const handleLogout = () => {
-    logout(); // Llama a la función de logout del contexto
+    logout();
   };
 
   return (
     <View style={styles.container}>
+      {/* Imagen de perfil */}
+      {user.image && (
+        <Image source={{ uri: user.image }} style={styles.profileImage} />
+      )}
+
       <Text style={styles.title}>Perfil de Usuario</Text>
 
       <Text style={styles.label}>Nombre de Usuario</Text>
       <TextInput
         style={styles.input}
         value={user.username}
-        editable={false} // Campo no editable
+        editable={false}
       />
 
       <Text style={styles.label}>Correo Electrónico</Text>
       <TextInput
         style={styles.input}
         value={user.email}
-        editable={false} // Campo no editable
+        editable={false}
       />
 
       <Text style={styles.label}>Contraseña</Text>
@@ -75,19 +74,18 @@ export default function Profile() {
         <TextInput
           style={[styles.input, styles.passwordInput]}
           value={user.password}
-          secureTextEntry={!showPassword} // Muestra la contraseña si `showPassword` es true
-          editable={false} // Campo no editable
+          secureTextEntry={!showPassword}
+          editable={false}
         />
         <TouchableOpacity onPress={toggleShowPassword} style={styles.iconContainer}>
           <Ionicons
-            name={showPassword ? "eye-off" : "eye"} // Cambia el icono según el estado
+            name={showPassword ? "eye-off" : "eye"}
             size={24}
             color="#aaa"
           />
         </TouchableOpacity>
       </View>
 
-      {/* Botón para abrir el formulario de cambio de contraseña */}
       <TouchableOpacity
         style={styles.changePasswordButton}
         onPress={() => setIsChangingPassword(!isChangingPassword)}
@@ -97,35 +95,33 @@ export default function Profile() {
         </Text>
       </TouchableOpacity>
 
-      {/* Formulario de cambio de contraseña */}
       {isChangingPassword && (
-  <View style={styles.changePasswordForm}>
-    <TextInput
-      style={styles.input}
-      placeholder="Contraseña Actual"
-      value={passwordData.currentPassword}
-      onChangeText={(value) => handlePasswordChange("currentPassword", value)}
-    />
-    <TextInput
-      style={styles.input}
-      placeholder="Nueva Contraseña"
-      value={passwordData.newPassword}
-      onChangeText={(value) => handlePasswordChange("newPassword", value)}
-    />
-    <TextInput
-      style={styles.input}
-      placeholder="Confirmar Nueva Contraseña"
-      value={passwordData.confirmNewPassword}
-      onChangeText={(value) => handlePasswordChange("confirmNewPassword", value)}
-    />
-    <TouchableOpacity style={styles.saveButton} onPress={handleChangePassword}>
-      <Text style={styles.saveButtonText}>Guardar Nueva Contraseña</Text>
-    </TouchableOpacity>
-  </View>
-)}
+        <View style={styles.changePasswordForm}>
+          <TextInput
+            style={styles.input}
+            placeholder="Contraseña Actual"
+            value={passwordData.currentPassword}
+            onChangeText={(value) => handlePasswordChange("currentPassword", value)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Nueva Contraseña"
+            value={passwordData.newPassword}
+            onChangeText={(value) => handlePasswordChange("newPassword", value)}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Confirmar Nueva Contraseña"
+            value={passwordData.confirmNewPassword}
+            onChangeText={(value) => handlePasswordChange("confirmNewPassword", value)}
+          />
+          <TouchableOpacity style={styles.saveButton} onPress={handleChangePassword}>
+            <Text style={styles.saveButtonText}>Guardar Nueva Contraseña</Text>
+          </TouchableOpacity>
+        </View>
+      )}
 
-       {/* Botón de Cerrar Sesión */}
-       <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
         <Text style={styles.logoutButtonText}>CERRAR SESIÓN</Text>
       </TouchableOpacity>
     </View>
@@ -138,7 +134,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#0d1421fd", // Fondo oscuro
+    backgroundColor: "#0d1421fd",
+  },
+  profileImage: {
+    width: 100, // Tamaño de la imagen
+    height: 100,
+    borderRadius: 50, // Hacer la imagen circular
+    marginBottom: 20, // Espacio debajo de la imagen
   },
   title: {
     fontSize: 28,
@@ -156,14 +158,14 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     height: 50,
-    backgroundColor: "#1e2533", // Fondo del campo
+    backgroundColor: "#1e2533",
     borderRadius: 10,
     paddingHorizontal: 15,
     color: "#fff",
     fontSize: 16,
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: "#555", // Color del borde
+    borderColor: "#555",
   },
   passwordContainer: {
     width: "100%",
@@ -205,12 +207,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   logoutButton: {
-    backgroundColor: "#f44336", // Rojo para el botón de cerrar sesión
+    backgroundColor: "#f44336",
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
     marginTop: 30,
-    width: "100%", // Ocupa todo el ancho disponible
+    width: "100%",
   },
   logoutButtonText: {
     color: "#fff",
