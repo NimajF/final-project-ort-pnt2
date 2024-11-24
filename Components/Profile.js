@@ -1,3 +1,4 @@
+import { useRouter } from "expo-router";
 import { useState, useContext } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image } from "react-native";
 import { UserSessionContext } from "../contexts/UserSessionContext";
@@ -45,6 +46,8 @@ export default function Profile() {
   const handleLogout = () => {
     logout();
   };
+  const router = useRouter();
+
 
   return (
     <View style={styles.container}>
@@ -53,7 +56,20 @@ export default function Profile() {
         <Image source={{ uri: user.image }} style={styles.profileImage} />
       )}
 
-      <Text style={styles.title}>Perfil de Usuario</Text>
+      {/* Título dinámico basado en el tipo de usuario */}
+      <Text style={styles.title}>
+        {user.admin ? "Perfil de Administrador" : "Perfil de Usuario"}
+      </Text>
+
+      {/* Botón para modificar usuarios, solo visible para administradores */}
+      {user.admin && (
+        <TouchableOpacity
+        style={styles.modifyUsersButton}
+        onPress={() => router.push("/manageUser")}
+      >
+          <Text style={styles.modifyUsersButtonText}>MODIFICAR USUARIOS</Text>
+        </TouchableOpacity>
+      )}
 
       <Text style={styles.label}>Nombre de Usuario</Text>
       <TextInput
@@ -137,10 +153,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#0d1421fd",
   },
   profileImage: {
-    width: 100, // Tamaño de la imagen
+    width: 100,
     height: 100,
-    borderRadius: 50, // Hacer la imagen circular
-    marginBottom: 20, // Espacio debajo de la imagen
+    borderRadius: 50,
+    marginBottom: 20,
   },
   title: {
     fontSize: 28,
@@ -193,6 +209,19 @@ const styles = StyleSheet.create({
   changePasswordForm: {
     marginTop: 20,
     width: "100%",
+  },
+  modifyUsersButton: {
+    backgroundColor: "#f44336",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    alignItems: "center",
+    width: "100%",
+  },
+  modifyUsersButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   saveButton: {
     backgroundColor: "#4caf50",
