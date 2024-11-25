@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert } from "react-native";
 
 export const UserSessionContext = createContext();
 
@@ -104,21 +105,33 @@ export const UserSessionProvider = ({ children }) => {
   };
 
 
-
-  const updatePassword = async (newPassword) => {
-    if (!user) return;
-
+  const updatePassword = async (userId, newPassword) => {
     try {
-      const updatedUser = { ...user, password: newPassword };
+      const response = await fetch(`https://66fc939ac3a184a84d175ec7.mockapi.io/api/users/${userId}`, {
+        method: "PUT", // Método HTTP que reemplaza la información del usuario
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password: newPassword }), // Solo enviamos el campo de contraseña
+      });
+  
+      if (!response.ok) throw new Error("Failed to update password");
+  
+      const updatedUser = await response.json();
+  
+      // Actualizamos el estado global del usuario
       setUser(updatedUser);
+  
+      // Almacenamos el usuario actualizado en AsyncStorage
       await AsyncStorage.setItem("userData", JSON.stringify(updatedUser));
-      alert("Contraseña actualizada exitosamente");
+  
+      Alert.alert("Éxito", "La contraseña fue actualizada exitosamente.");
     } catch (error) {
+      Alert.alert("Error", "No se pudo actualizar la contraseña en MockAPI.");
       console.error("Error al actualizar la contraseña:", error);
-      alert("No se pudo actualizar la contraseña");
     }
   };
-
+  
   return (
     <UserSessionContext.Provider
       value={{ login, register, logout, status, user, setUser, updatePassword }}

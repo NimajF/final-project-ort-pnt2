@@ -38,7 +38,7 @@ export default function Profile() {
       return;
     }
 
-    updatePassword(newPassword);
+    updatePassword(user.id, newPassword);
     Alert.alert("Éxito", "La contraseña ha sido cambiada exitosamente.");
     setIsChangingPassword(false);
   };
