@@ -96,3 +96,35 @@ export async function fetchPricesFromAPI(symbols) {
     throw error;
   }
 }
+
+export function sortData(data, option, direction) {
+  const sortedData = [...data]; // Clona los datos para no mutar el original
+  sortedData.sort((a, b) => {
+    let comparison = 0;
+
+    switch (option) {
+      case "rank":
+        comparison = a.market_cap_rank - b.market_cap_rank;
+        break;
+      case "name":
+        comparison = a.name.localeCompare(b.name);
+        break;
+      case "price":
+        comparison = a.current_price - b.current_price;
+        break;
+      case "change":
+        comparison =
+          a.price_change_percentage_24h_in_currency -
+          b.price_change_percentage_24h_in_currency;
+        break;
+      case "marketCap":
+        comparison = a.market_cap - b.market_cap;
+        break;
+      default:
+        break;
+    }
+
+    return direction === "asc" ? comparison : -comparison;
+  });
+  return sortedData;
+}

@@ -14,17 +14,21 @@ export default function SelectForApi({ handleOption }) {
       <TouchableOpacity
         style={[
           styles.button,
-          selectedOption === 0 ? styles.selectedButton : styles.unselectedButton,
+          selectedOption === 0
+            ? styles.selectedButton
+            : styles.unselectedButton,
         ]}
         onPress={() => handleButtonPress(0)}
       >
         <Text style={styles.buttonText}>Top Gainers</Text>
       </TouchableOpacity>
-      
+
       <TouchableOpacity
         style={[
           styles.button,
-          selectedOption === 1 ? styles.selectedButton : styles.unselectedButton,
+          selectedOption === 1
+            ? styles.selectedButton
+            : styles.unselectedButton,
         ]}
         onPress={() => handleButtonPress(1)}
       >

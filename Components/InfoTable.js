@@ -1,13 +1,36 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export default function InfoTable() {
+export default function InfoTable({ handleSort }) {
   return (
     <View style={styles.tableHeader}>
-      <Text style={[styles.headerText, styles.rankColumn]}>#</Text>
-      <Text style={[styles.headerText, styles.nameColumn]}>Name</Text>
-      <Text style={[styles.headerText, styles.priceColumn]}>Price</Text>
-      <Text style={[styles.headerText, styles.changeColumn]}>24h %</Text>
-      <Text style={[styles.headerText, styles.marketCapColumn]}>
+      <Text
+        style={[styles.headerText, styles.rankColumn]}
+        onPress={() => handleSort("rank")}
+      >
+        #
+      </Text>
+      <Text
+        style={[styles.headerText, styles.nameColumn]}
+        onPress={() => handleSort("name")}
+      >
+        Name
+      </Text>
+      <Text
+        style={[styles.headerText, styles.priceColumn]}
+        onPress={() => handleSort("price")}
+      >
+        Price
+      </Text>
+      <Text
+        style={[styles.headerText, styles.changeColumn]}
+        onPress={() => handleSort("change")}
+      >
+        24h %
+      </Text>
+      <Text
+        style={[styles.headerText, styles.marketCapColumn]}
+        onPress={() => handleSort("marketCap")}
+      >
         Market Cap
       </Text>
     </View>
@@ -19,9 +42,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingVertical: 10,
-    borderBottomWidth: 1,
     // borderBottomColor: "#3e8b5e",
-    backgroundColor: "#5b3cce",
+    backgroundColor: "#182130",
     padding: 10,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
