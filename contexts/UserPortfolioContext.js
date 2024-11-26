@@ -1,5 +1,12 @@
-import { createContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useEffect,
+  useState,
+  useMemo,
+  useCallback,
+} from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { calculateTotalPnL, fetchPricesFromAPI } from "../utils/handlers";
 
 export const UserPortfolioContext = createContext();
 
@@ -9,9 +16,11 @@ export const UserPortfolioProvider = ({ children }) => {
     totalInvestment: 0,
   };
   const [portfolio, setPortfolio] = useState(initialState);
+  const [symbols, setSymbols] = useState([]);
+  const [prices, setPrices] = useState(null);
+  const [pnl, setPnl] = useState(0);
 
   useEffect(() => {
-    console.log(portfolio);
     const loadPortfolio = async () => {
       try {
         const storedPortfolio = await AsyncStorage.getItem("userPortfolio");
@@ -22,6 +31,7 @@ export const UserPortfolioProvider = ({ children }) => {
         console.error("Error loading portfolio from AsyncStorage:", error);
       }
     };
+
     loadPortfolio();
   }, []);
 
@@ -35,7 +45,34 @@ export const UserPortfolioProvider = ({ children }) => {
     };
 
     savePortfolio();
+
+    if (portfolio?.coins) {
+      const generatedSymbols = Array.from(
+        new Set(portfolio.coins.map((c) => c.coinId))
+      );
+      setSymbols(generatedSymbols);
+    }
   }, [portfolio]);
+
+  useEffect(() => {
+    const fetchPrices = async () => {
+      if (!symbols.length || prices) return;
+
+      try {
+        const res = await fetchPricesFromAPI(symbols);
+        if (res) {
+          setPrices(res);
+          const calculatedPnL = calculateTotalPnL(portfolio, res);
+          console.log(calculatedPnL);
+          setPnl(calculatedPnL);
+        }
+      } catch (error) {
+        console.error("Error fetching prices:", error);
+      }
+    };
+
+    fetchPrices();
+  }, [symbols, prices]);
 
   const addOrUpdateCoin = (
     coinName,
@@ -100,16 +137,9 @@ export const UserPortfolioProvider = ({ children }) => {
     });
   };
 
-  // const getAmountOfXCoin = (coinName) => {
-  //   const total = Object.keys(portfolio.coins);
-  //   console.log(total);
-
-  //   return total;
-  // };
-
   return (
     <UserPortfolioContext.Provider
-      value={{ portfolio, setPortfolio, addOrUpdateCoin }}
+      value={{ portfolio, setPortfolio, addOrUpdateCoin, symbols, pnl, prices }}
     >
       {children}
     </UserPortfolioContext.Provider>
