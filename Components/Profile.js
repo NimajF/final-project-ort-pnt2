@@ -1,12 +1,21 @@
 import { useContext } from "react";
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons"; // Biblioteca de íconos
 import PortfolioTable from "./Portfolio";
+import Favorites from "./Favorites";
 import { UserSessionContext } from "../contexts/UserSessionContext";
+import { useRouter } from "expo-router";
 import { UserPortfolioContext } from "../contexts/UserPortfolioContext";
 
 export default function Profile() {
   const { user } = useContext(UserSessionContext);
   const { pnl } = useContext(UserPortfolioContext);
+  const router = useRouter();
+
+  const handleSettingsClick = () => {
+    router.push("/logout"); // Redirige al componente de Logout
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
@@ -18,6 +27,10 @@ export default function Profile() {
           <Text style={styles.username}>{user?.username || "Guest User"}</Text>
           <Text style={styles.email}>{user?.email || "Not logged in"}</Text>
         </View>
+        {/* Botón de Settings */}
+        <TouchableOpacity onPress={handleSettingsClick} style={styles.settingsButton}>
+          <Ionicons name="settings-sharp" size={24} color="#e2e8f0" />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.portfolioSection}>
@@ -33,6 +46,7 @@ export default function Profile() {
           </Text>
         </View>
         <PortfolioTable />
+        <Favorites/>
       </View>
     </ScrollView>
   );
@@ -70,6 +84,13 @@ const styles = StyleSheet.create({
   email: {
     fontSize: 14,
     color: "#cbd5e0",
+  },
+  settingsButton: {
+    padding: 8,
+    backgroundColor: "#2d3748",
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
   },
   portfolioSection: {
     fontFamily: "Inter_18pt-Regular",

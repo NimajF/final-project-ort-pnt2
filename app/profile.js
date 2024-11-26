@@ -15,6 +15,6 @@ export default function App() {
 
 const styles = StyleSheet.create({
   scroll: {
-    width: "100%",
+    flex: 1,
   },
 });
