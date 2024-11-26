@@ -4,9 +4,7 @@ import { UserSessionContext } from "../contexts/UserSessionContext";
 
 const API_URL = "https://66fc939ac3a184a84d175ec7.mockapi.io/api/users";
 export default function FavoriteList() {
-  const {user} = useContext(UserSessionContext)
-
-  
+  const { user } = useContext(UserSessionContext);
 
   return (
     <View>

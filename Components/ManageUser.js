@@ -14,24 +14,24 @@ import { UserSessionContext } from "../contexts/UserSessionContext";
 const API_URL = "https://66fc939ac3a184a84d175ec7.mockapi.io/api/users";
 
 export default function ManageUser() {
-  const { user } = useContext(UserSessionContext); // Obtener el usuario actual del contexto
+  const { user } = useContext(UserSessionContext);
   const router = useRouter(); // Hook para manejar navegación
   const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null); // Usuario seleccionado para modificar
-  const [modalVisible, setModalVisible] = useState(false); // Visibilidad del pop-up
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [isUserLoaded, setIsUserLoaded] = useState(false);
 
   useEffect(() => {
-    // Si el usuario no es admin, redirigir al index
-    if (!user || !user.admin) {
-      router.push("/"); // Redirigir al index
-      return;
+    if (user) {
+      setIsUserLoaded(true);
+      if (!user.admin) {
+        router.push("/");
+      } else {
+        fetchUsers();
+      }
     }
-
-    // Obtener usuarios si es admin
-    fetchUsers();
   }, [user]);
 
-  // Función para obtener los datos de la API
   const fetchUsers = async () => {
     try {
       const response = await fetch(API_URL);
@@ -60,7 +60,10 @@ export default function ManageUser() {
       setModalVisible(false);
       fetchUsers(); // Actualizar la lista
     } catch (error) {
-      Alert.alert("Error", "Hubo un problema al hacer al usuario administrador.");
+      Alert.alert(
+        "Error",
+        "Hubo un problema al hacer al usuario administrador."
+      );
       console.error(error);
     }
   };
@@ -95,21 +98,20 @@ export default function ManageUser() {
           setModalVisible(true); // Mostrar pop-up
         }}
       >
-        <Text style={styles.modifyButtonText}>Modify User</Text>
+        <Text style={styles.modifyButtonText}>Modify</Text>
       </TouchableOpacity>
     </View>
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Lista de Usuarios</Text>
+      <Text style={styles.title}>User List</Text>
       <FlatList
         data={users}
         renderItem={renderUser}
         keyExtractor={(item) => item.id}
       />
 
-      {/* Modal para las opciones de administrador */}
       {selectedUser && (
         <Modal
           transparent={true}
@@ -126,19 +128,19 @@ export default function ManageUser() {
                 style={styles.modalButton}
                 onPress={() => makeAdmin(selectedUser.id)}
               >
-                <Text style={styles.modalButtonText}>Make it Admin</Text>
+                <Text style={styles.modalButtonText}>Make Admin</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, styles.deleteButton]}
                 onPress={() => deleteUser(selectedUser.id)}
               >
-                <Text style={styles.modalButtonText}>Erase it</Text>
+                <Text style={styles.modalButtonText}>Delete</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalButton, styles.cancelButton]}
                 onPress={() => setModalVisible(false)}
               >
-                <Text style={styles.modalButtonText}>Cancelar</Text>
+                <Text style={styles.modalButtonText}>Cancel</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -171,7 +173,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   userInfo: {
-    color: "#ffffff",
+    color: "#cfcfcf",
     fontSize: 16,
   },
   userType: {
@@ -179,14 +181,14 @@ const styles = StyleSheet.create({
     color: "#00AEEF",
   },
   modifyButton: {
+    fontSize: 10,
     backgroundColor: "#4caf50",
-    padding: 10,
-    borderRadius: 10,
+    padding: 8,
+    borderRadius: 5,
   },
   modifyButtonText: {
     color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
+    fontSize: 12,
   },
   modalContainer: {
     flex: 1,

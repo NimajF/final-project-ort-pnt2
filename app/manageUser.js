@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 import ManageUser from "../Components/ManageUser";
 
-export default function App() {
+export default function ManageUserPage() {
   return (
     <ScrollView style={styles.scroll}>
       <View>

@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     backgroundColor: "#0d1421",
-    alignItems: "center",
     width: "100%",
   },
 });

@@ -20,28 +20,32 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import AddCoinModal from "../../Components/AddCoinModal";
 
 export default function CoinPage() {
-  const {user}= useContext(UserSessionContext)
+  const { user } = useContext(UserSessionContext);
   const [coin, setCoin] = useState([]);
   const { id } = useLocalSearchParams();
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const [message, setMessage] = useState("");
-  const [isFavorite, setIsFavorite] = useState(false); // Estado para manejar si es favorito o no
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const handleFavorite = async () => {
-    const coinObj = {coinName: coin.name, coinSymbol:coin.symbol}
-    await addToFavorites(user?.id, coinObj, user.favorites)
-    setIsFavorite((prev) => !prev); // Cambia el estado de favorito
-    setMessage(isFavorite ? "Removed from favorites!" : "Added to favorites!"); // Mensaje de confirmación
-    setToastVisible(true); // Muestra el toast
+    const coinObj = {
+      coinName: coin.name,
+      coinSymbol: coin.symbol,
+      coinImage: coin.image.small,
+    };
+    await addToFavorites(user?.id, coinObj, user.favorites);
+    setIsFavorite((prev) => !prev);
+    setMessage(isFavorite ? "Removed from favorites!" : "Added to favorites!");
+    setToastVisible(true);
     setTimeout(() => {
-      setToastVisible(false); // Oculta el toast después de 3 segundos
+      setToastVisible(false);
     }, 3000);
 
     //
   };
-  
+
   useEffect(() => {
     const url = `https://api.coingecko.com/api/v3/coins/${id}`;
     const options = {
@@ -55,7 +59,6 @@ export default function CoinPage() {
       .then((res) => res.json())
       .then((json) => {
         setCoin(json);
-        //Me gusta tu hmna benjas
         setLoading(false);
       })
       .catch((err) => {
@@ -64,30 +67,26 @@ export default function CoinPage() {
       });
   }, []);
 
-  useEffect(()=>{
-  
-    if (!loading){
-      const fetchUpdatedUser = async () =>{
+  useEffect(() => {
+    if (!loading) {
+      const fetchUpdatedUser = async () => {
         try {
           const response = await fetch(
             `https://66fc939ac3a184a84d175ec7.mockapi.io/api/users/${user?.id}`
           );
           const data = await response.json();
-         
-            const hasFavorite = data.favorites?.some((c) => c.coinSymbol === coin.symbol)
-            setIsFavorite(hasFavorite)
-        
-          
-          alert(coin.symbol, hasFavorite)
+
+          const hasFavorite = data.favorites?.some(
+            (c) => c.coinSymbol === coin.symbol
+          );
+          setIsFavorite(hasFavorite);
         } catch (error) {
           console.error(error);
         }
-      }
-      fetchUpdatedUser()
+      };
+      fetchUpdatedUser();
     }
-
-}, [loading])
-
+  }, [loading]);
 
   if (loading) {
     return <ActivityIndicator size="large" color="#52527e" />;
@@ -117,12 +116,11 @@ export default function CoinPage() {
           <Text style={{ color: "grey", fontWeight: "100" }}>(USD)</Text>
         </Text>
 
-        {/* Botón para agregar a favoritos */}
         <Pressable style={styles.favorite} onPress={handleFavorite}>
           <FontAwesome
             name={isFavorite ? "star" : "star-o"}
             size={24}
-            color={isFavorite ? "#FFD700" : "#bebebe"} // Cambia el color si es favorito
+            color={isFavorite ? "#FFD700" : "#bebebe"}
           />
         </Pressable>
 

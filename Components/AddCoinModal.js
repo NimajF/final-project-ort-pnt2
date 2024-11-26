@@ -19,14 +19,13 @@ export default function AddCoinModal({
   toastVisible,
   infoAdded,
 }) {
-  const { portfolio, addOrUpdateCoin } = useContext(UserPortfolioContext);
+  const { addOrUpdateCoin } = useContext(UserPortfolioContext);
   const [amount, setAmount] = useState(0);
   const [userCash, setUserCash] = useState(0);
 
   const handleAddCoin = () => {
-    // Convierte userCash a número
     let total = coinAmountConverter(
-      Number(userCash), // Conversión a número
+      Number(userCash),
       coin.market_data.current_price.usd
     );
     infoAdded(
@@ -51,9 +50,8 @@ export default function AddCoinModal({
   };
 
   useEffect(() => {
-    // Convierte userCash a número antes de usarlo en coinAmountConverter
     let total = coinAmountConverter(
-      Number(userCash), // Conversión a número
+      Number(userCash),
       coin.market_data.current_price.usd
     );
     setAmount(total);
